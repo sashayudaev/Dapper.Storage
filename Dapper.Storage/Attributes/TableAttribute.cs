@@ -2,7 +2,7 @@
 
 namespace Dapper.Storage.Attributes
 {
-	public class TableAttribute
+	public class TableAttribute : Attribute
 	{
 		public string Name { get; }
 		public string Schema { get; set; }
