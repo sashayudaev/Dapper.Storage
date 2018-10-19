@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Transactions;
-using Dapper.Storage.Autofac;
-using Dapper.Storage.Context;
-using Dapper.Storage.Entities;
+﻿using Dapper.Storage.Autofac;
 
 namespace Dapper.Storage.Console
 {
@@ -15,8 +10,6 @@ namespace Dapper.Storage.Console
 
 			var scope = provider.GetService(typeof(QueryScope)) 
 				as QueryScope;
-
-
 		}
 	}
 }
