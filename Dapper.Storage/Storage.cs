@@ -6,7 +6,6 @@ using Dapper.Storage.Core;
 
 namespace Dapper.Storage
 {
-	using System;
 	using DapperExtensions;
 
 	public class Storage : IStorage, IQuery

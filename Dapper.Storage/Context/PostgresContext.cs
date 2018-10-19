@@ -10,18 +10,18 @@ namespace Dapper.Storage.Context
 
 	public class PostgresContext : IStorageContext
 	{
+		internal PostgreSqlDialect Dialect { get; } =
+			new PostgreSqlDialect();
+
 		internal NpgsqlConnectionStringBuilder Builder { get; }
 
 		public PostgresContext(string connection)
 		{
 			Builder = new NpgsqlConnectionStringBuilder(connection);
 
-			DapperExtensions.SqlDialect = new PostgreSqlDialect();
-			DapperAsyncExtensions.SqlDialect = new PostgreSqlDialect();
+			DapperExtensions.SqlDialect = Dialect;
+			DapperAsyncExtensions.SqlDialect = Dialect;
 		}
-
-		public IDbConnection ConfigureConnection() =>
-			new NpgsqlConnection(Builder.ConnectionString);
 
 		public IDbConnection ConfigureConnection(string login, string password)
 		{
@@ -34,5 +34,8 @@ namespace Dapper.Storage.Context
 			
 			return new NpgsqlConnection(builder.ConnectionString);
 		}
+
+		public IDbConnection ConfigureConnection() =>
+			new NpgsqlConnection(Builder.ConnectionString);
 	}
 }

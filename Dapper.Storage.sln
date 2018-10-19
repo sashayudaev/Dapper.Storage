@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapper.Storage", "Dapper.St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapper.Storage.Console", "Dapper.Storage.Console\Dapper.Storage.Console.csproj", "{26F527D1-F018-4652-B995-5BEBFD078789}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapper.Storage.Autofac", "Dapper.Storage.Autofac\Dapper.Storage.Autofac.csproj", "{50E703A0-29D6-426C-A890-7852FA51FF54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{26F527D1-F018-4652-B995-5BEBFD078789}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26F527D1-F018-4652-B995-5BEBFD078789}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26F527D1-F018-4652-B995-5BEBFD078789}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50E703A0-29D6-426C-A890-7852FA51FF54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50E703A0-29D6-426C-A890-7852FA51FF54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50E703A0-29D6-426C-A890-7852FA51FF54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50E703A0-29D6-426C-A890-7852FA51FF54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

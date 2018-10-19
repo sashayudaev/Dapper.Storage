@@ -1,8 +1,8 @@
 ﻿namespace Dapper.Storage.Entities
 {
-	using Table = Attributes.TableAttribute;
 	using Key = Attributes.KeyAttribute;
 	using Column = Attributes.ColumnAttribute;
+	using Table = Attributes.TableAttribute;
 
 	[@Table("users", Schema = "public")]
 	public class UserEntity

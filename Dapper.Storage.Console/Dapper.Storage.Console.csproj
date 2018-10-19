@@ -51,6 +51,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dapper.Storage.Autofac\Dapper.Storage.Autofac.csproj">
+      <Project>{50E703A0-29D6-426C-A890-7852FA51FF54}</Project>
+      <Name>Dapper.Storage.Autofac</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dapper.Storage.Core\Dapper.Storage.Core.csproj">
       <Project>{22B2414B-E315-4F71-8F18-77002F94C2E4}</Project>
       <Name>Dapper.Storage.Core</Name>
