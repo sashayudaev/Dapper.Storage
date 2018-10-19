@@ -10,7 +10,7 @@ namespace Dapper.Storage.Context
 
 	public class PostgresContext : IStorageContext
 	{
-		public NpgsqlConnectionStringBuilder Builder { get; }
+		internal NpgsqlConnectionStringBuilder Builder { get; }
 
 		public PostgresContext(string connection)
 		{
