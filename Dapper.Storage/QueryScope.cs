@@ -7,8 +7,8 @@ namespace Dapper.Storage
 
 	public class QueryScope
 	{
-		public IStorage Postgres { get; }
 		public IStorage Sybase { get; }
+		public IStorage Postgres { get; }
 
 		public QueryScope(
 			[Filter(StorageType.Sybase)] IStorage sybase,
