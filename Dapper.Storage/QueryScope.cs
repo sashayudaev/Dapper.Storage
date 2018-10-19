@@ -3,17 +3,19 @@ using Dapper.Storage.Core;
 
 namespace Dapper.Storage
 {
+	using Filter = KeyFilterAttribute;
+
 	public class QueryScope
 	{
 		public IStorage Postgres { get; }
 		public IStorage Sybase { get; }
 
 		public QueryScope(
-			[KeyFilter(StorageType.Postgres)] IStorage postgres,
-			[KeyFilter(StorageType.Sybase)] IStorage sybase)
+			[Filter(StorageType.Sybase)] IStorage sybase,
+			[Filter(StorageType.Postgres)] IStorage postgres)
 		{
-			Postgres = postgres;
 			Sybase = sybase;
+			Postgres = postgres;
 		}
 	}
 }
