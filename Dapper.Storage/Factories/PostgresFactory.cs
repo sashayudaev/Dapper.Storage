@@ -15,6 +15,5 @@ namespace Dapper.Storage.Factories
 		public TStorage CreateStorage<TStorage>()
 			where TStorage : IHaveConnection => 
 			Context.ResolveKeyed<TStorage>(StorageType.Postgres);
-
 	}
 }

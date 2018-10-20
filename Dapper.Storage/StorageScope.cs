@@ -9,10 +9,10 @@ namespace Dapper.Storage
 {
 	public class StorageScope : IStorageScope
 	{
-		internal IStorage Storage =>
-			Factory.CreateStorage<IStorage>();
 		internal IQuery Query =>
 			Factory.CreateStorage<IQuery>();
+		internal IStorage Storage =>
+			Factory.CreateStorage<IStorage>();
 
 		public IStorageFactory Factory { get; }
 

@@ -1,4 +1,5 @@
-﻿using Dapper.Storage.Autofac;
+﻿using System.Linq;
+using Dapper.Storage.Autofac;
 using Dapper.Storage.Core;
 using Dapper.Storage.Entities;
 
@@ -13,10 +14,9 @@ namespace Dapper.Storage.Console
 			var scope = provider.GetService(typeof(IStorageScope)) 
 				as IStorageScope;
 
-			using (var transaction = scope.Begin())
+			using (var connection = scope.OpenConnection("postgres", "nothingissafe123"))
 			{
-				var users = scope.Select<UserEntity>();
-
+				var user = connection.Query<UserEntity>("getuser", new { id = 9 }, commandType: System.Data.CommandType.StoredProcedure);
 			}
 		}
 	}
