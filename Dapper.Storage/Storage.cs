@@ -6,9 +6,10 @@ using Dapper.Storage.Core;
 
 namespace Dapper.Storage
 {
+	using System;
 	using DapperExtensions;
 
-	public class Storage : IStorage, IQuery
+	public class Storage : IStorage, IQuery, IDisposable
 	{
 		public IStorageContext Context { get; }
 		protected IDbConnection Connection { get; }

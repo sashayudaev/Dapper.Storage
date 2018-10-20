@@ -4,7 +4,8 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dapper.Storage.Context;
 using Dapper.Storage.Core;
-using Autofac.Features.AttributeFilters;
+using Dapper.Storage.Factories;
+
 namespace Dapper.Storage.Autofac
 {
 	public static class Bootstrapper
@@ -21,9 +22,11 @@ namespace Dapper.Storage.Autofac
 			builder.Register(_ => CreateStorage(() => new SybaseContext()))
 				.Keyed<IStorage>(StorageType.Sybase);
 
-			builder.RegisterType<QueryScope>()
-				.WithAttributeFiltering()
-				.AsSelf();
+			builder.RegisterType<PostgresFactory>()
+				.As<IStorageFactory>();
+
+			builder.RegisterType<StorageScope>()
+				.As<IStorageScope>();
 
 			return new AutofacServiceProvider(builder.Build());
 		}

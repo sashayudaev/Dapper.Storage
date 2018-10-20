@@ -1,4 +1,6 @@
 ﻿using Dapper.Storage.Autofac;
+using Dapper.Storage.Core;
+using Dapper.Storage.Entities;
 
 namespace Dapper.Storage.Console
 {
@@ -8,8 +10,14 @@ namespace Dapper.Storage.Console
 		{
 			var provider = Bootstrapper.ConfigureProvider();
 
-			var scope = provider.GetService(typeof(QueryScope)) 
-				as QueryScope;
+			var scope = provider.GetService(typeof(IStorageScope)) 
+				as IStorageScope;
+
+			using (var transaction = scope.Begin())
+			{
+				var users = scope.Select<UserEntity>();
+
+			}
 		}
 	}
 }

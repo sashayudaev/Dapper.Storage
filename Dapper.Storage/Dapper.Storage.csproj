@@ -57,6 +57,7 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.0\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -77,9 +78,10 @@
     <Compile Include="Context\SybaseContext.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="EntityClassMapper.cs" />
+    <Compile Include="Factories\PostgresFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryScope.cs" />
     <Compile Include="Storage.cs" />
+    <Compile Include="StorageScope.cs" />
     <Compile Include="StorageType.cs" />
   </ItemGroup>
   <ItemGroup>

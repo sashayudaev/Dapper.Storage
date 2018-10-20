@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Dapper.Storage.Core
 {
-	public interface IStorage : IHaveConnection, IDisposable
+	public interface IStorage : IHaveConnection
 	{
 		IQueryable<TEntity> Select<TEntity>()
 			where TEntity : class;
