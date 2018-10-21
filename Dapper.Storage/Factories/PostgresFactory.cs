@@ -5,15 +5,16 @@ namespace Dapper.Storage.Factories
 {
 	public class PostgresFactory : IStorageFactory
 	{
-		public IComponentContext Context { get; }
+		public ILifetimeScope Context { get; }
 
 		public PostgresFactory(IComponentContext context)
 		{
-			Context = context;
+			Context = (ILifetimeScope) context;
 		}
 
 		public TStorage CreateStorage<TStorage>()
 			where TStorage : IHaveConnection => 
-			Context.ResolveKeyed<TStorage>(StorageType.Postgres);
+			Context.BeginLifetimeScope()
+			.ResolveKeyed<TStorage>(StorageType.Postgres);
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace Dapper.Storage
+﻿namespace Dapper.Storage.Core
 {
 	public enum StorageType
 	{

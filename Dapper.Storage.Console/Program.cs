@@ -14,10 +14,19 @@ namespace Dapper.Storage.Console
 			var scope = provider.GetService(typeof(IStorageScope)) 
 				as IStorageScope;
 
-			using (var connection = scope.OpenConnection("postgres", "nothingissafe123"))
+			using (var first = scope.Begin())
 			{
-				var user = connection.Query<UserEntity>("getuser", new { id = 9 }, commandType: System.Data.CommandType.StoredProcedure);
+				var users = scope.Select<UserEntity>();
+				using (var second = scope.Begin())
+				{
+					var others = scope.Select<UserEntity>();
+				}
+				var left = scope.Select<UserEntity>();
 			}
+
+			var entities = scope.Select<UserEntity>();
+
+			System.Console.ReadKey();
 		}
 	}
 }

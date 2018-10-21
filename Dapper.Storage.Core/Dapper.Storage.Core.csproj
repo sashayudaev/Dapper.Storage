@@ -49,6 +49,7 @@
     <Compile Include="IStorageScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IStorageFactory.cs" />
+    <Compile Include="StorageType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

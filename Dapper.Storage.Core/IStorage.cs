@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Dapper.Storage.Core
 {
-	public interface IStorage : IHaveConnection
+	public interface IStorage : IHaveConnection, IDisposable
 	{
 		IQueryable<TEntity> Select<TEntity>()
 			where TEntity : class;

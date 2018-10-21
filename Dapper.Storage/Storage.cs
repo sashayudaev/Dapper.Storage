@@ -8,6 +8,7 @@ namespace Dapper.Storage
 {
 	using System;
 	using DapperExtensions;
+	using Debug = System.Diagnostics.Debug;
 
 	public class Storage : IStorage, IQuery, IDisposable
 	{
@@ -56,8 +57,11 @@ namespace Dapper.Storage
 		#endregion
 
 		#region IDisposable
-		public void Dispose() =>
+		public void Dispose()
+		{
+			Debug.WriteLine("Disposed");
 			Connection?.Dispose();
+		}
 		#endregion
 
 		private void SetupDapper()

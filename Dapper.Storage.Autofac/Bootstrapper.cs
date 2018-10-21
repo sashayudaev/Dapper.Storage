@@ -18,9 +18,11 @@ namespace Dapper.Storage.Autofac
 			var builder = new ContainerBuilder();
 
 			builder.Register(_ => CreateStorage(() => new PostgresContext(Connection)))
-				.Keyed<IStorage>(StorageType.Postgres);
+				.Keyed<IStorage>(StorageType.Postgres)
+				.InstancePerLifetimeScope();
 			builder.Register(_ => CreateStorage(() => new SybaseContext()))
-				.Keyed<IStorage>(StorageType.Sybase);
+				.Keyed<IStorage>(StorageType.Sybase)
+				.InstancePerLifetimeScope();
 
 			builder.RegisterType<PostgresFactory>()
 				.As<IStorageFactory>();

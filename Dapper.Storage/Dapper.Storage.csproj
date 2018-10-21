@@ -82,7 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="StorageScope.cs" />
-    <Compile Include="StorageType.cs" />
+    <Compile Include="StorageTransactionScope.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dapper.Storage.Core\Dapper.Storage.Core.csproj">
