@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Autofac;
-using Autofac.Core;
-using Dapper.Storage.Core;
+﻿using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
