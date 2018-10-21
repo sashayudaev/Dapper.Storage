@@ -12,15 +12,22 @@ namespace Dapper.Storage.Tests
 	[TestClass]
 	public class StorageResourceTests
 	{
-		[TestMethod]
-		public void Query_WithoutTransaction_ShouldNotHaveTransaction()
+		public ILifetimeScope LifetimeScope { get; private set; }
+
+		[TestInitialize]
+		public void Setup()
 		{
 			var mock = new Mock<ILifetimeScope>();
 			mock.Setup(lf => lf.BeginLifetimeScope())
 				.Returns(mock.Object);
 
-			var context = mock.Object;
-			var resource = new StorageResource(context);
+			LifetimeScope = mock.Object;
+		}
+
+		[TestMethod]
+		public void Query_WithoutTransaction_ShouldNotHaveTransaction()
+		{
+			var resource = new StorageResource(LifetimeScope);
 
 			Assert.IsFalse(resource.HasTransaction);
 		}
@@ -28,12 +35,7 @@ namespace Dapper.Storage.Tests
 		[TestMethod]
 		public void Query_InTransaction_ShouldHaveTransaction()
 		{
-			var mock = new Mock<ILifetimeScope>();
-			mock.Setup(lf => lf.BeginLifetimeScope())
-				.Returns(mock.Object);
-
-			var context = mock.Object;
-			var resource = new StorageResource(context);
+			var resource = new StorageResource(LifetimeScope);
 
 			bool hasTransaction;
 			using (var transaction = resource.Begin())
@@ -47,12 +49,7 @@ namespace Dapper.Storage.Tests
 		[TestMethod]
 		public void MultipleTransaction_EndTransaction_NoTransactionLevel()
 		{
-			var mock = new Mock<ILifetimeScope>();
-			mock.Setup(lf => lf.BeginLifetimeScope())
-				.Returns(mock.Object);
-
-			var context = mock.Object;
-			var resource = new StorageResource(context);
+			var resource = new StorageResource(LifetimeScope);
 
 			var first = resource.Begin();
 			var second = resource.Begin();
