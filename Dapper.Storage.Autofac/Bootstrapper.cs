@@ -4,7 +4,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dapper.Storage.Context;
 using Dapper.Storage.Core;
-using Dapper.Storage.Factories;
 
 namespace Dapper.Storage.Autofac
 {
@@ -23,10 +22,7 @@ namespace Dapper.Storage.Autofac
 			builder.Register(_ => CreateStorage(() => new SybaseContext()))
 				.Keyed<IStorage>(StorageType.Sybase)
 				.InstancePerLifetimeScope();
-
-			builder.RegisterType<PostgresFactory>()
-				.As<IStorageFactory>();
-
+			
 			builder.RegisterType<StorageResource>()
 				.As<IStorageResource>();
 

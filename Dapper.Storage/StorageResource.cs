@@ -91,14 +91,5 @@ namespace Dapper.Storage
 
 		private ILifetimeScope NewScope() =>
 			RootScope.BeginLifetimeScope();
-
-		private IStorage CreateStorage() =>
-			this.CreateStorage<IStorage>();
-		private IQuery CreateQuery() =>
-			this.CreateStorage<IQuery>();
-
-		private TStorage CreateStorage<TStorage>()
-			where TStorage : IHaveConnection =>
-			RootScope.ResolveKeyed<TStorage>(StorageType.Postgres);
 	}
 }

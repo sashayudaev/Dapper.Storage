@@ -78,7 +78,6 @@
     <Compile Include="Context\SybaseContext.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="EntityClassMapper.cs" />
-    <Compile Include="Factories\PostgresFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="StorageResource.cs" />
