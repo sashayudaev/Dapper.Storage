@@ -3,17 +3,17 @@ using System.Transactions;
 
 namespace Dapper.Storage.Core
 {
-	public interface ITransactionScope : IDisposable
+	public interface IStorageScope : IDisposable
 	{
 		void Complete();
 	}
 
-	public interface IStorageScope : IStorage, IQuery
+	public interface IStorageResource : IStorage, IQuery
 	{
 		bool HasTransaction { get; }
 		int TransactionLevel { get; set; }
 
-		ITransactionScope Begin();
+		IStorageScope Begin();
 		void End();
 	}
 }

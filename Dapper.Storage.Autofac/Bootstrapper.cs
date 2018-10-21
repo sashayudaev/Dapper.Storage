@@ -27,8 +27,8 @@ namespace Dapper.Storage.Autofac
 			builder.RegisterType<PostgresFactory>()
 				.As<IStorageFactory>();
 
-			builder.RegisterType<StorageScope>()
-				.As<IStorageScope>();
+			builder.RegisterType<StorageResource>()
+				.As<IStorageResource>();
 
 			return new AutofacServiceProvider(builder.Build());
 		}

@@ -1,96 +1,65 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using System.Transactions;
-using Autofac;
 using Dapper.Storage.Core;
 
 namespace Dapper.Storage
 {
+	using Debug = System.Diagnostics.Debug;
 	public class StorageScope : IStorageScope
 	{
-		internal IQuery Query =>
-			RootScope.ResolveKeyed<IQuery>(StorageType.Postgres);
-		internal IStorage Storage =>
-			RootScope.ResolveKeyed<IStorage>(StorageType.Postgres);
-
-		public bool HasTransaction =>
-			TransactionLevel > 0;
-
-		private ILifetimeScope NewScope =>
-			Context.BeginLifetimeScope();
-
-		private ILifetimeScope RootScope { get; set; }
-		public ILifetimeScope Context { get; }
-
-		public int TransactionLevel { get; set; }
-
-		public StorageScope(IComponentContext context)
+		private class TransactionToken : IDisposable
 		{
-			Context = (ILifetimeScope) context;
-		}
+			public IStorageResource Scope { get; }
 
-		#region IStorageScope
-		public ITransactionScope Begin()
-		{
-			if(RootScope == null)
+			public TransactionToken(IStorageResource scope)
 			{
-				RootScope = NewScope;
+				Scope = scope;
+				Scope.TransactionLevel++;
+				Debug.WriteLine($"[TransactionLevel]: {Scope.TransactionLevel}");
 			}
 
-			return new StorageTransactionScope(this);
+			public void Dispose()
+			{
+				Scope.TransactionLevel--;
+				Debug.WriteLine($"[TransactionLevel]: {Scope.TransactionLevel}");
+
+				if (!Scope.HasTransaction)
+				{
+					Scope.End();
+				}
+			}
 		}
 
-		public void End() =>
-			RootScope.Dispose();
-		#endregion
+		private TransactionToken Token { get; }
+		private TransactionScope TransactionScope { get; }
 
-		#region IStorage
-		public IQueryable<TEntity> Select<TEntity>()
-			where TEntity : class
+		public StorageScope(IStorageResource scope)
 		{
-			if(HasTransaction)
-			{
-				return Storage.Select<TEntity>();
-			}
-
-			using (RootScope = NewScope)
-			{
-				return Storage.Select<TEntity>();
-			}
+			Token = new TransactionToken(scope);
+			TransactionScope = this.StartTransaction();
 		}
-			
-		public Task InsertAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
-			Storage.InsertAsync(entity);
 
-		public Task<bool> UpdateAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
-			Storage.UpdateAsync(entity);
+		public void Complete() =>
+			TransactionScope.Complete();
 
-		public Task<bool> DeleteAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
-			Storage.DeleteAsync(entity);
-		#endregion
+		public void Dispose()
+		{
+			Token.Dispose();
+			TransactionScope.Dispose();
+		}
 
-		#region IQuery
-		public Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, TEntity entity)
-			where TEntity : class =>
-			Query.QueryAsync(query, entity);
+		private TransactionScope StartTransaction()
+		{
+			var options = new TransactionOptions
+			{
+				IsolationLevel = IsolationLevel.ReadCommitted
 
-		public Task<TEntity> QueryScalarAsync<TEntity>(string query, TEntity entity)
-			where TEntity : class =>
-			Query.QueryScalarAsync(query, entity);
-		#endregion
+			};
 
-		#region IHaveConnection
-		public IDbConnection OpenConnection(string login, string password) =>
-			Storage.OpenConnection(login, password);
-		#endregion
-
-		#region IDisposable
-		public void Dispose() { }
-		#endregion
+			return new TransactionScope(
+				TransactionScopeOption.RequiresNew,
+				options,
+				TransactionScopeAsyncFlowOption.Enabled);
+		}
 	}
 }
