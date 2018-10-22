@@ -72,10 +72,12 @@
   <ItemGroup>
     <Compile Include="Attributes\ColumnAttribute.cs" />
     <Compile Include="Attributes\CompositeKeyAttribute.cs" />
+    <Compile Include="Attributes\DialectAttribute.cs" />
     <Compile Include="Attributes\KeyAttribute.cs" />
     <Compile Include="Attributes\TableAttribute.cs" />
     <Compile Include="Context\PostgresContext.cs" />
     <Compile Include="Context\SybaseContext.cs" />
+    <Compile Include="Dapper\SqlGenerator.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="EntityClassMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -56,26 +56,26 @@ namespace Dapper.Storage
 			where TEntity : class =>
 			Storage.Select<TEntity>();
 			
-		public Task InsertAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
+		public async Task InsertAsync<TEntity>(TEntity entity)
+			where TEntity : class => await
 			Storage.InsertAsync(entity);
 
-		public Task<bool> UpdateAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
+		public async Task<bool> UpdateAsync<TEntity>(TEntity entity)
+			where TEntity : class => await
 			Storage.UpdateAsync(entity);
 
-		public Task<bool> DeleteAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
+		public async Task<bool> DeleteAsync<TEntity>(TEntity entity)
+			where TEntity : class => await
 			Storage.DeleteAsync(entity);
 		#endregion
 
 		#region IQuery
-		public Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, TEntity entity)
-			where TEntity : class =>
+		public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, TEntity entity)
+			where TEntity : class => await
 			Query.QueryAsync(query, entity);
 
-		public Task<TEntity> QueryScalarAsync<TEntity>(string query, TEntity entity)
-			where TEntity : class =>
+		public async Task<TEntity> QueryScalarAsync<TEntity>(string query, TEntity entity)
+			where TEntity : class => await
 			Query.QueryScalarAsync(query, entity);
 		#endregion
 

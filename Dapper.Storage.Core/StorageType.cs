@@ -2,7 +2,9 @@
 {
 	public enum StorageType
 	{
+		SqlServer,
 		Postgres,
+		Oracle,
 		Sybase
 	}
 }
