@@ -15,6 +15,116 @@ namespace Dapper.Storage.Dapper
 	using DialectMapper = Dictionary<StorageType, ISqlDialect>;
 	using Parameters = IDictionary<string, object>;
 
+	public class QueryBuilder
+	{
+		private StringBuilder Query { get; } =
+			new StringBuilder();
+
+		private ISqlDialect Dialect { get; set; }
+
+		public QueryBuilder(ISqlDialect dialect)
+		{
+			Dialect = dialect;
+		}
+
+		public QueryBuilder()
+			:this(new PostgreSqlDialect())
+		{
+
+		}
+
+		public QueryBuilder UseDialect(ISqlDialect dialect)
+		{
+			Dialect = dialect;
+			return this;
+		}
+
+		public QueryBuilder Select(string names)
+		{
+			Query.Append($"SELECT {names}");
+			return this;
+		}
+
+		public QueryBuilder SelectCount()
+		{
+			Query.Append($"SELECT COUNT(*) AS {Dialect.OpenQuote}Total{Dialect.CloseQuote}");
+			return this;
+		}
+
+		public QueryBuilder Insert(string table)
+		{
+			Query.Append($"INSERT INTO {table}");
+			return this;
+		}
+
+		public QueryBuilder Update(string table)
+		{
+			Query.Append($"UPDATE {table}");
+			return this;
+		}
+
+		public QueryBuilder Delete(string from)
+		{
+			Query.Append($"DELETE FROM {from}");
+			return this;
+		}
+
+		public QueryBuilder From(string table)
+		{
+			Query.Append($"FROM {table}");
+			return this;
+		}
+
+		public QueryBuilder Where(string predicate)
+		{
+			if(String.IsNullOrEmpty(predicate))
+			{
+				return this;
+			}
+
+			Query.Append($"WHERE {predicate}");
+			return this;
+		}
+
+		public QueryBuilder OrderBy(string columns)
+		{
+			if (String.IsNullOrEmpty(columns))
+			{
+				return this;
+			}
+
+			Query.Append($"ORDER BY {columns}");
+			return this;
+		}
+
+		public QueryBuilder Set(IEnumerable<string> values)
+		{
+			Query.Append($"SET {values.AppendStrings()}");
+			return this;
+		}
+
+
+		public QueryBuilder Values(IEnumerable<string> names, IEnumerable<string> values)
+		{
+			Query.Append($"({names.AppendStrings()}) VALUES ({values.AppendStrings()})");
+			return this;
+		}
+
+		public QueryBuilder Returning(string column)
+		{
+			if (String.IsNullOrEmpty(column))
+			{
+				return this;
+			}
+
+			Query.Append($" RETURNING {column} INTO {Dialect.ParameterPrefix}IdOutParam");
+			return this;
+		}
+
+		public string Build() =>
+			Query.ToString();
+	}
+
 	public class SqlGenerator : SqlGeneratorImpl
 	{
 		private static ISqlDialect SqlServer { get; } =
@@ -42,31 +152,21 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
+			var query = new QueryBuilder(dialect);
+
 			var table = this.GetTableName(map);
 
+			var sortingColumns = sort.Select(column =>
+				this.GetColumnName(map, column.PropertyName, false) +
+				(column.Ascending ? " ASC" : " DESC"));
 
-			var select = new StringBuilder(
-				$"SELECT {this.BuildSelectColumns(map)}");
+			query
+				.Select(BuildSelectColumns(map))
+				.From(table)
+				.Where(predicate?.GetSql(this, parameters))
+				.OrderBy(sortingColumns.AppendStrings());
 
-			var from = $" FROM {table}";
-
-			var where = String.Empty;
-			if (predicate != null)
-			{
-				where = $" WHERE {predicate.GetSql(this, parameters)}";
-			}
-
-			var orderby = String.Empty;
-			if (sort != null && sort.Any())
-			{
-				var sortingColumns = sort.Select(column =>
-					this.GetColumnName(map, column.PropertyName, false) +
-					(column.Ascending ? " ASC" : " DESC"));
-
-				orderby = $" ORDER BY {sortingColumns}";
-			}
-
-			return select.Append(from).Append(where).Append(orderby).ToString();
+			return query.Build();
 		}
 
 		public override string Count(
@@ -80,22 +180,16 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
+			var query = new QueryBuilder(dialect);
+
 			var table = this.GetTableName(map);
 
-			var openQuote = dialect.OpenQuote;
-			var closeQuote = dialect.CloseQuote;
+			query
+				.SelectCount()
+				.From(table)
+				.Where(predicate.GetSql(this, parameters));
 
-			var select = new StringBuilder(
-				$"SELECT COUNT(*) AS {openQuote}Total{closeQuote}");
-			var from = $" FROM {table}";
-
-			var where = String.Empty;
-			if (predicate != null)
-			{
-				where = $" WHERE {predicate.GetSql(this, parameters)}";
-			}
-
-			return select.Append(from).Append(where).ToString();
+			return query.Build();
 		}
 
 		public override string Insert(IClassMapper map)
@@ -111,18 +205,12 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
+			var query = new QueryBuilder(dialect);
+
+			var table = this.GetTableName(map);
 
 			var columnNames = columns.Select(p => GetColumnName(map, p, false));
 			var parameters = columns.Select(p => dialect.ParameterPrefix + p.Name);
-
-			var insert = new StringBuilder("INSERT INTO");
-			var table = $" {this.GetTableName(map)} ";
-			var names = $" ({columnNames.AppendStrings()}) ";
-			var values = $"VALUES ({parameters.AppendStrings()})";
-
-			insert.Append(table)
-				.Append(names)
-				.Append(values);
 
 			var triggerIdentityColumn = map.Properties
 				.Where(p => p.KeyType == KeyType.TriggerIdentity)
@@ -134,14 +222,16 @@ namespace Dapper.Storage.Dapper
 					"TriggerIdentity generator cannot be used with multi-column keys");
 			}
 
-			var returning = String.Empty;
-			if (triggerIdentityColumn.Count > 0)
-			{
-				var triggerColumn = triggerIdentityColumn.Select(p => GetColumnName(map, p, false)).First();
-				returning = $" RETURNING {triggerColumn} INTO {dialect.ParameterPrefix}IdOutParam";
-			}
+			var triggerColumn = triggerIdentityColumn
+				.Select(p => GetColumnName(map, p, false))
+				.First();
+			
+			query
+				.Insert(table)
+				.Values(columnNames, parameters)
+				.Returning(triggerColumn);
 
-			return insert.Append(returning).ToString();
+			return query.Build();
 		}
 
 		public override string Update(
@@ -170,13 +260,17 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
+			var query = new QueryBuilder(dialect);
 
-			var update = new StringBuilder("UPDATE");
-			var table = $" {this.GetTableName(map)} ";
-			var set = columns.Select(c => $"{this.GetColumnName(map, c, false)} = {dialect.ParameterPrefix}{c.Name}");
-			var where = predicate.GetSql(this, parameters);
+			var table = this.GetTableName(map);
+			var values = columns.Select(c => $"{this.GetColumnName(map, c, false)} = {dialect.ParameterPrefix}{c.Name}");
 
-			return update.Append(table).Append(set).Append(where).ToString();
+			query
+				.Update(table)
+				.Set(values)
+				.Where(predicate.GetSql(this, parameters));
+
+			return query.Build();
 		}
 
 		public override string Delete(
@@ -194,13 +288,14 @@ namespace Dapper.Storage.Dapper
 				throw new ArgumentNullException(nameof(parameters));
 			}
 
+			var query = new QueryBuilder();
 			var table = this.GetTableName(map);
 
-			var delete = new StringBuilder("DELETE");
-			var from = $"FROM {table}";
-			var where = $" WHERE {predicate.GetSql(this, parameters)}";
+			query
+				.Delete(from: table)
+				.Where(predicate.GetSql(this, parameters));
 
-			return delete.Append(from).Append(where).ToString();
+			return query.Build();
 		}
 
 		public override string IdentitySql(IClassMapper map)
