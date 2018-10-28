@@ -54,7 +54,7 @@ namespace Dapper.Storage
 
 			if (property.HasAttribute(out CompositeKey _))
 			{
-				map.Key(KeyType.Identity);
+				map.Key(KeyType.Assigned);
 			}
 
 			if (property.HasAttribute(out Column column))
