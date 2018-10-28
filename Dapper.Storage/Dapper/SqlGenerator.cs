@@ -129,12 +129,43 @@ namespace Dapper.Storage.Dapper
 
 	public class SqlGenerator : SqlGeneratorImpl
 	{
-		private static ISqlDialect SqlServer { get; } =
-			new SqlServerDialect();
-		private static ISqlDialect Postgres { get; } =
-			new PostgreSqlDialect();
-		private static ISqlDialect Oracle { get; } =
-			new OracleDialect();
+		private static class DialectCache
+		{
+			private static ISqlDialect SqlServer { get; } =
+				new SqlServerDialect();
+			private static ISqlDialect Postgres { get; } =
+				new PostgreSqlDialect();
+			private static ISqlDialect Oracle { get; } =
+				new OracleDialect();
+
+			public static ISqlDialect GetDialectOrDefault(Type entity)
+			{
+				if(Cache.TryGetValue(entity, out var dialect))
+				{
+					return dialect;
+				}
+
+				if (entity.HasAttribute(out DialectAttribute attribute))
+				{
+					dialect = Dialects[attribute.Dialect];
+					Cache.Add(entity, dialect);
+
+					return dialect;
+				}
+
+				return Postgres;
+			}
+
+			private static readonly IDictionary<Type, ISqlDialect> Cache =
+				new Dictionary<Type, ISqlDialect>();
+
+			private static readonly DialectMapper Dialects =
+				new DialectMapper
+				{
+					{ StorageType.Postgres, Postgres },
+					{ StorageType.Sybase, SqlServer }
+				};
+		}
 
 		public SqlGenerator(IDapperExtensionsConfiguration configuration) 
 			: base(configuration)
@@ -338,22 +369,7 @@ namespace Dapper.Storage.Dapper
 			!(property.Ignored || property.IsReadOnly) &&
 			  property.KeyType == KeyType.NotAKey;
 
-		private ISqlDialect GetDialect(Type entity)
-		{
-			var dialect = StorageType.Postgres;
-			if(entity.HasAttribute(out DialectAttribute attribute))
-			{
-				dialect = attribute.Dialect;
-			}
-			
-			return Dialects[dialect];
-		}
-
-		private static readonly DialectMapper Dialects =
-			new DialectMapper
-			{
-				{ StorageType.Postgres, Postgres },
-				{ StorageType.Sybase, SqlServer }
-			};
+		private ISqlDialect GetDialect(Type entity) =>
+			DialectCache.GetDialectOrDefault(entity);
 	}
 }
