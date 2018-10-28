@@ -8,7 +8,8 @@ namespace Dapper.Storage.Attributes
 
 		public ProcedureParameterAttribute(string name)
 		{
-			Name = name;
+			Name = name ??
+				throw new ArgumentNullException(nameof(name));
 		}
 	}
 }

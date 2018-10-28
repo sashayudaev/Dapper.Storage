@@ -1,32 +1,32 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using Dapper.Storage.Core;
-using Npgsql;
 
 namespace Dapper.Storage.Context
 {
-	public class PostgresContext : IStorageContext
+	public class SqlServerContext : IStorageContext
 	{
 		internal DbConnectionStringBuilder Builder { get; }
 
-		public PostgresContext(string connection)
+		public SqlServerContext(string connection)
 		{
-			Builder = new NpgsqlConnectionStringBuilder(connection);
+			Builder = new SqlConnectionStringBuilder(connection);
 		}
 
 		public IDbConnection ConfigureConnection(string login, string password)
 		{
-			var builder = new NpgsqlConnectionStringBuilder(
+			var builder = new SqlConnectionStringBuilder(
 				Builder.ConnectionString)
 			{
-				Username = login,
+				UserID = login,
 				Password = password
 			};
-			
-			return new NpgsqlConnection(builder.ConnectionString);
+
+			return new SqlConnection(builder.ConnectionString);
 		}
 
 		public IDbConnection ConfigureConnection() =>
-			new NpgsqlConnection(Builder.ConnectionString);
+			new SqlConnection(Builder.ConnectionString);
 	}
 }

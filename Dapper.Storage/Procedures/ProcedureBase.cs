@@ -24,8 +24,11 @@ namespace Dapper.Storage.Procedures
 			this.GetType().GetProperties()
 				.Where(HasParameterAttribute)
 				.ToDictionary(
-					x => x.GetCustomAttribute<ProcedureParameterAttribute>().Name,
+					GetParameterName,
 					x => x.GetValue(this));
+
+		private static string GetParameterName(PropertyInfo property) =>
+			property.GetCustomAttribute<ProcedureParameterAttribute>().Name;
 
 		private static bool HasParameterAttribute(PropertyInfo property) =>
 			Attribute.IsDefined(

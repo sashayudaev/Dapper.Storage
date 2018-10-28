@@ -77,6 +77,7 @@
     <Compile Include="Attributes\ProcedureParameterAttribute.cs" />
     <Compile Include="Attributes\TableAttribute.cs" />
     <Compile Include="Context\PostgresContext.cs" />
+    <Compile Include="Context\SqlServerContext.cs" />
     <Compile Include="Context\SybaseContext.cs" />
     <Compile Include="Dapper\SqlGenerator.cs" />
     <Compile Include="Entities\UserEntity.cs" />
