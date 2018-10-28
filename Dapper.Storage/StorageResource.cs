@@ -8,10 +8,17 @@ using Dapper.Storage.Core;
 
 namespace Dapper.Storage
 {
+	public static class StorageResourceExtensions
+	{
+		public static void UsePostgres(this IStorageResource storage) =>
+			storage.Use(StorageType.Postgres);
+		public static void UseSybase(this IStorageResource storage) =>
+			storage.Use(StorageType.Sybase);
+	}
+
 	public class StorageResource : IStorageResource
 	{
-		public StorageType StorageType { get; } =
-			StorageType.Postgres;
+		public StorageType StorageType { get; private set; }
 
 		internal IQuery Query => 
 			AvailableScope.ResolveKeyed<IQuery>(StorageType);
@@ -49,6 +56,9 @@ namespace Dapper.Storage
 
 		public void End() =>
 			TransactionScope.Dispose();
+
+		public void Use(StorageType storage) =>
+			StorageType = storage;
 		#endregion
 
 		#region IStorage

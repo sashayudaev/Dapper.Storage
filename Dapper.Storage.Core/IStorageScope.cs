@@ -7,13 +7,4 @@ namespace Dapper.Storage.Core
 	{
 		void Complete();
 	}
-
-	public interface IStorageResource : IStorage, IQuery
-	{
-		bool HasTransaction { get; }
-		int TransactionLevel { get; set; }
-
-		IStorageScope Begin();
-		void End();
-	}
 }

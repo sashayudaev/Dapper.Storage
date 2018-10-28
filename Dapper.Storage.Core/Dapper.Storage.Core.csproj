@@ -46,6 +46,7 @@
     <Compile Include="IQuery.cs" />
     <Compile Include="IStorage.cs" />
     <Compile Include="IStorageContext.cs" />
+    <Compile Include="IStorageResource.cs" />
     <Compile Include="IStorageScope.cs" />
     <Compile Include="IStoredProcedure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

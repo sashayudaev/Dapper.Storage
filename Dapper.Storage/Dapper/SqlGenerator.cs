@@ -352,10 +352,8 @@ namespace Dapper.Storage.Dapper
 		private static readonly DialectMapper Dialects =
 			new DialectMapper
 			{
-				{ StorageType.SqlServer, SqlServer },
 				{ StorageType.Postgres, Postgres },
-				{ StorageType.Sybase, SqlServer },
-				{ StorageType.Oracle, Oracle }
+				{ StorageType.Sybase, SqlServer }
 			};
 	}
 }
