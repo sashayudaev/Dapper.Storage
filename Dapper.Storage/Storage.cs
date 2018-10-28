@@ -67,6 +67,8 @@ namespace Dapper.Storage
 		#endregion
 
 		#region IHaveConnection
+		public IDbConnection OpenConnection() =>
+			Context.ConfigureConnection();
 		public IDbConnection OpenConnection(string login, string password) =>
 			Context.ConfigureConnection(login, password);
 		#endregion
