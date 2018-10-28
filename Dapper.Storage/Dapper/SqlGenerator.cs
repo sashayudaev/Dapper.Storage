@@ -51,9 +51,9 @@ namespace Dapper.Storage.Dapper
 			return this;
 		}
 
-		public QueryBuilder Insert(string table)
+		public QueryBuilder Insert(string into)
 		{
-			Query.Append($"INSERT INTO {table}");
+			Query.Append($"INSERT INTO {into}");
 			return this;
 		}
 
@@ -104,7 +104,9 @@ namespace Dapper.Storage.Dapper
 		}
 
 
-		public QueryBuilder Values(IEnumerable<string> names, IEnumerable<string> values)
+		public QueryBuilder Values(
+			IEnumerable<string> names, 
+			IEnumerable<string> values)
 		{
 			Query.Append($"({names.AppendStrings()}) VALUES ({values.AppendStrings()})");
 			return this;
@@ -227,7 +229,7 @@ namespace Dapper.Storage.Dapper
 				.First();
 			
 			query
-				.Insert(table)
+				.Insert(into: table)
 				.Values(columnNames, parameters)
 				.Returning(triggerColumn);
 

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using Dapper.Storage.Autofac;
+﻿using Dapper.Storage.Autofac;
 using Dapper.Storage.Core;
 using Dapper.Storage.Entities;
+using Dapper.Storage.Procedures;
 
 namespace Dapper.Storage.Console
 {
@@ -13,30 +11,20 @@ namespace Dapper.Storage.Console
 		{
 			var provider = Bootstrapper.ConfigureProvider();
 
-			var storage = provider.GetService(typeof(IStorageResource)) 
-				as IStorageResource;
+			var storage = provider.GetService(typeof(IQuery)) 
+				as IQuery;
 
-			var func = new ThreadStart(() => BeginThread(storage));
-			var thread = new Thread(func);
+			var procedure = new GetUserProcedure(id: 9);
 
-			thread.Start();
+			var users = storage.QueryProcedure<UserEntity>(procedure).Result;
 
-			using (var first = storage.Begin())
+			foreach (var user in users)
 			{
-				while (true)
-				{
-					storage.Select<UserEntity>();
-				}
+				System.Console.WriteLine(
+					$"{user.Id} - {user.Login}");
 			}
-		}
 
-		private static void BeginThread(IStorageResource storage)
-		{
-			while(storage != null)
-			{
-				storage.Select<UserEntity>();
-				Thread.Sleep(1);
-			}
+			System.Console.ReadKey();
 		}
 	}
 }

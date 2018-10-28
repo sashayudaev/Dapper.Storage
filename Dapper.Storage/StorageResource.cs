@@ -70,6 +70,14 @@ namespace Dapper.Storage
 		#endregion
 
 		#region IQuery
+		public async Task<IEnumerable<TEntity>> QueryProcedure<TEntity>(string name, object parameters)
+			where TEntity : class => await
+			Query.QueryProcedure<TEntity>(name, parameters);
+
+		public async Task<IEnumerable<TEntity>> QueryProcedure<TEntity>(IStoredProcedure procedure)
+			where TEntity : class => await
+			Query.QueryProcedure<TEntity>(procedure);
+
 		public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, TEntity entity)
 			where TEntity : class => await
 			Query.QueryAsync(query, entity);
@@ -77,6 +85,9 @@ namespace Dapper.Storage
 		public async Task<TEntity> QueryScalarAsync<TEntity>(string query, TEntity entity)
 			where TEntity : class => await
 			Query.QueryScalarAsync(query, entity);
+
+		public async Task QueryAsync(string query, object entity = null) =>
+			await Query.QueryAsync(query, entity);
 		#endregion
 
 		#region IHaveConnection

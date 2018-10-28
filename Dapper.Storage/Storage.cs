@@ -28,27 +28,44 @@ namespace Dapper.Storage
 			where TEntity : class => 
 			Connection.GetList<TEntity>().AsQueryable();
 
-		public Task InsertAsync<TEntity>(TEntity entity)
-			where TEntity : class => 
+		public async Task InsertAsync<TEntity>(TEntity entity)
+			where TEntity : class => await
 			Connection.InsertAsync(entity);
 
-		public Task<bool> UpdateAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
+		public async Task<bool> UpdateAsync<TEntity>(TEntity entity)
+			where TEntity : class => await
 			Connection.UpdateAsync(entity);
 
-		public Task<bool> DeleteAsync<TEntity>(TEntity entity)
-			where TEntity : class =>
+		public async Task<bool> DeleteAsync<TEntity>(TEntity entity)
+			where TEntity : class => await
 			Connection.DeleteAsync(entity);
 		#endregion
 
 		#region IQuery
-		public Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, TEntity entity)
-			where TEntity : class => 
+		public async Task<IEnumerable<TEntity>> QueryProcedure<TEntity>(string name, object parameters)
+			where TEntity : class => await
+			Connection.QueryAsync<TEntity>(
+				sql: name, 
+				param: parameters, 
+				commandType: CommandType.StoredProcedure);
+
+		public async Task<IEnumerable<TEntity>> QueryProcedure<TEntity>(IStoredProcedure procedure)
+			where TEntity : class => await
+			Connection.QueryAsync<TEntity>(
+				sql: procedure.Name,
+				param: procedure.Parameter,
+				commandType: CommandType.StoredProcedure);
+
+		public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, TEntity entity)
+			where TEntity : class => await
 			Connection.QueryAsync<TEntity>(query, entity);
 
-		public Task<TEntity> QueryScalarAsync<TEntity>(string query, TEntity entity)
-			where TEntity : class =>
+		public async Task<TEntity> QueryScalarAsync<TEntity>(string query, TEntity entity)
+			where TEntity : class => await
 			Connection.ExecuteScalarAsync<TEntity>(query, entity);
+
+		public async Task QueryAsync(string query, object entity = null) =>
+			await Connection.QueryAsync(query, entity);
 		#endregion
 
 		#region IHaveConnection
