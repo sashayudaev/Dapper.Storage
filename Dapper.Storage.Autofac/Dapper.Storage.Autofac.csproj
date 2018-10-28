@@ -37,6 +37,12 @@
     <Reference Include="Autofac.Extensions.DependencyInjection, Version=4.3.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.Extensions.DependencyInjection.4.3.0\lib\netstandard2.0\Autofac.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper, Version=1.12.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.12\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="DapperExtensions, Version=1.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DapperExtensions.1.6.3\lib\net45\DapperExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.1.1.0\lib\netstandard1.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>

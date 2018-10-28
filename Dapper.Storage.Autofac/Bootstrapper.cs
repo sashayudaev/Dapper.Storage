@@ -4,9 +4,12 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dapper.Storage.Context;
 using Dapper.Storage.Core;
+using DapperExtensions;
 
 namespace Dapper.Storage.Autofac
 {
+	using DapperExtensions = DapperExtensions.DapperExtensions;
+
 	public static class Bootstrapper
 	{
 		public static string Connection =>
@@ -32,6 +35,7 @@ namespace Dapper.Storage.Autofac
 				.As<IStorage>()
 				.As<IQuery>();
 
+			SetupDapper();
 			return new AutofacServiceProvider(builder.Build());
 		}
 
@@ -51,5 +55,12 @@ namespace Dapper.Storage.Autofac
 			var context = createContext();
 			return new Storage(context);
 		}
+
+		private static void SetupDapper()
+		{
+			DapperExtensions.DefaultMapper = typeof(EntityClassMapper<>);
+			DapperAsyncExtensions.DefaultMapper = typeof(EntityClassMapper<>);
+		}
+
 	}
 }

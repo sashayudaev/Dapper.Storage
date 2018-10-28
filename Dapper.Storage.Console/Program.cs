@@ -14,9 +14,9 @@ namespace Dapper.Storage.Console
 			var storage = provider.GetService(typeof(IQuery)) 
 				as IQuery;
 
-			var procedure = new GetUserProcedure(id: 9);
+			var getUser = new GetUserProcedure(id: 9);
 
-			var users = storage.QueryProcedure<UserEntity>(procedure).Result;
+			var users = storage.QueryProcedure<UserEntity>(getUser).Result;
 
 			foreach (var user in users)
 			{

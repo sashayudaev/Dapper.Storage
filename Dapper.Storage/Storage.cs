@@ -19,8 +19,6 @@ namespace Dapper.Storage
 		{
 			Context = context;
 			Connection = context.ConfigureConnection();
-
-			this.SetupDapper();
 		}
 
 		#region IStorage
@@ -80,11 +78,5 @@ namespace Dapper.Storage
 			Connection?.Dispose();
 		}
 		#endregion
-
-		private void SetupDapper()
-		{
-			DapperExtensions.DefaultMapper = typeof(EntityClassMapper<>);
-			DapperAsyncExtensions.DefaultMapper = typeof(EntityClassMapper<>);
-		}
 	}
 }
