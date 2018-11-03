@@ -3,7 +3,9 @@
 	using Key = Attributes.KeyAttribute;
 	using Column = Attributes.ColumnAttribute;
 	using Table = Attributes.TableAttribute;
+	using global::Dapper.Storage.Attributes;
 
+	[Dialect(Core.StorageType.Postgres)]
 	[@Table("users", Schema = "public")]
 	public class UserEntity
 	{

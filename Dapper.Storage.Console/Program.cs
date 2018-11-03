@@ -11,18 +11,10 @@ namespace Dapper.Storage.Console
 		{
 			var provider = Bootstrapper.ConfigureProvider();
 
-			var storage = provider.GetService(typeof(IQuery)) 
-				as IQuery;
+			var storage = provider.GetService(typeof(IStorage)) 
+				as IStorage;
 
-			var getUser = new GetUserProcedure(id: 9);
-
-			var users = storage.QueryProcedure<UserEntity>(getUser).Result;
-
-			foreach (var user in users)
-			{
-				System.Console.WriteLine(
-					$"{user.Id} - {user.Login}");
-			}
+			var user = storage.Select<UserEntity>(u => u.Login.Contains("sasha"));
 
 			System.Console.ReadKey();
 		}

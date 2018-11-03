@@ -189,7 +189,7 @@ namespace Dapper.Storage.Dapper
 
 			var table = this.GetTableName(map);
 
-			var sortingColumns = sort.Select(column =>
+			var sortingColumns = sort?.Select(column =>
 				this.GetColumnName(map, column.PropertyName, false) +
 				(column.Ascending ? " ASC" : " DESC"));
 
@@ -197,7 +197,7 @@ namespace Dapper.Storage.Dapper
 				.Select(BuildSelectColumns(map))
 				.From(table)
 				.Where(predicate?.GetSql(this, parameters))
-				.OrderBy(sortingColumns.AppendStrings());
+				.OrderBy(sortingColumns?.AppendStrings());
 
 			return query.Build();
 		}

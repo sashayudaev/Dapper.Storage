@@ -4,6 +4,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dapper.Storage.Context;
 using Dapper.Storage.Core;
+using Dapper.Storage.Dapper;
 using DapperExtensions;
 
 namespace Dapper.Storage.Autofac
@@ -60,6 +61,9 @@ namespace Dapper.Storage.Autofac
 		{
 			DapperExtensions.DefaultMapper = typeof(EntityClassMapper<>);
 			DapperAsyncExtensions.DefaultMapper = typeof(EntityClassMapper<>);
+
+			DapperExtensions.InstanceFactory = config => new DapperImplementor(new SqlGenerator(config));
+			DapperAsyncExtensions.InstanceFactory = config => new DapperAsyncImplementor(new SqlGenerator(config));
 		}
 
 	}
