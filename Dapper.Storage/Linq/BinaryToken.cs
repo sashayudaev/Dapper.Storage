@@ -14,8 +14,6 @@ namespace Dapper.Storage.Linq
 		public override object Value =>
 			Token.Create(Expression.Right).Value;
 
-		private IPredicate CreateFieldPredicate(IToken left, IToken right) => null;
-
 		public BinaryToken(BinaryExpression expression)
 			:base(expression)
 		{
