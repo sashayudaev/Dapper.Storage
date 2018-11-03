@@ -49,6 +49,7 @@
     <Compile Include="IStorageResource.cs" />
     <Compile Include="IStorageScope.cs" />
     <Compile Include="IStoredProcedure.cs" />
+    <Compile Include="Linq\IQueryBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StorageType.cs" />
   </ItemGroup>

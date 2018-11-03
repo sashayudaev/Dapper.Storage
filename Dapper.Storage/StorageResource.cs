@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Transactions;
 using Autofac;
 using Dapper.Storage.Core;
+using Dapper.Storage.Core.Linq;
 
 namespace Dapper.Storage
 {
@@ -62,10 +65,10 @@ namespace Dapper.Storage
 		#endregion
 
 		#region IStorage
-		public IQueryable<TEntity> Select<TEntity>()
-			where TEntity : class =>
-			Storage.Select<TEntity>();
-			
+		public IQueryBuilder<TEntity, TResult> Select<TEntity, TResult>(
+			Expression<Func<TEntity, TResult>> predicate)
+			where TEntity : class => Storage.Select(predicate);
+
 		public async Task InsertAsync<TEntity>(TEntity entity)
 			where TEntity : class => await
 			Storage.InsertAsync(entity);

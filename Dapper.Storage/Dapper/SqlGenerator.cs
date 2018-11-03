@@ -15,67 +15,67 @@ namespace Dapper.Storage.Dapper
 	using DialectMapper = Dictionary<StorageType, ISqlDialect>;
 	using Parameters = IDictionary<string, object>;
 
-	public class QueryBuilder
+	public class SqlBuilder
 	{
 		private StringBuilder Query { get; } =
 			new StringBuilder();
 
 		private ISqlDialect Dialect { get; set; }
 
-		public QueryBuilder(ISqlDialect dialect)
+		public SqlBuilder(ISqlDialect dialect)
 		{
 			Dialect = dialect;
 		}
 
-		public QueryBuilder()
+		public SqlBuilder()
 			:this(new PostgreSqlDialect())
 		{
 
 		}
 
-		public QueryBuilder UseDialect(ISqlDialect dialect)
+		public SqlBuilder UseDialect(ISqlDialect dialect)
 		{
 			Dialect = dialect;
 			return this;
 		}
 
-		public QueryBuilder Select(string names)
+		public SqlBuilder Select(string names)
 		{
 			Query.Append($"SELECT {names}");
 			return this;
 		}
 
-		public QueryBuilder SelectCount()
+		public SqlBuilder SelectCount()
 		{
 			Query.Append($"SELECT COUNT(*) AS {Dialect.OpenQuote}Total{Dialect.CloseQuote}");
 			return this;
 		}
 
-		public QueryBuilder Insert(string into)
+		public SqlBuilder Insert(string into)
 		{
 			Query.Append($"INSERT INTO {into}");
 			return this;
 		}
 
-		public QueryBuilder Update(string table)
+		public SqlBuilder Update(string table)
 		{
 			Query.Append($"UPDATE {table}");
 			return this;
 		}
 
-		public QueryBuilder Delete(string from)
+		public SqlBuilder Delete(string from)
 		{
 			Query.Append($"DELETE FROM {from}");
 			return this;
 		}
 
-		public QueryBuilder From(string table)
+		public SqlBuilder From(string table)
 		{
 			Query.Append($"FROM {table}");
 			return this;
 		}
 
-		public QueryBuilder Where(string predicate)
+		public SqlBuilder Where(string predicate)
 		{
 			if(String.IsNullOrEmpty(predicate))
 			{
@@ -86,7 +86,7 @@ namespace Dapper.Storage.Dapper
 			return this;
 		}
 
-		public QueryBuilder OrderBy(string columns)
+		public SqlBuilder OrderBy(string columns)
 		{
 			if (String.IsNullOrEmpty(columns))
 			{
@@ -97,14 +97,14 @@ namespace Dapper.Storage.Dapper
 			return this;
 		}
 
-		public QueryBuilder Set(IEnumerable<string> values)
+		public SqlBuilder Set(IEnumerable<string> values)
 		{
 			Query.Append($"SET {values.AppendStrings()}");
 			return this;
 		}
 
 
-		public QueryBuilder Values(
+		public SqlBuilder Values(
 			IEnumerable<string> names, 
 			IEnumerable<string> values)
 		{
@@ -112,7 +112,7 @@ namespace Dapper.Storage.Dapper
 			return this;
 		}
 
-		public QueryBuilder Returning(string column)
+		public SqlBuilder Returning(string column)
 		{
 			if (String.IsNullOrEmpty(column))
 			{
@@ -185,7 +185,7 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
-			var query = new QueryBuilder(dialect);
+			var query = new SqlBuilder(dialect);
 
 			var table = this.GetTableName(map);
 
@@ -213,7 +213,7 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
-			var query = new QueryBuilder(dialect);
+			var query = new SqlBuilder(dialect);
 
 			var table = this.GetTableName(map);
 
@@ -238,7 +238,7 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
-			var query = new QueryBuilder(dialect);
+			var query = new SqlBuilder(dialect);
 
 			var table = this.GetTableName(map);
 
@@ -255,9 +255,10 @@ namespace Dapper.Storage.Dapper
 					"TriggerIdentity generator cannot be used with multi-column keys");
 			}
 
-			var triggerColumn = triggerIdentityColumn
-				.Select(p => GetColumnName(map, p, false))
-				.First();
+			var triggerColumn = triggerIdentityColumn.Count == 0
+				? String.Empty
+				: triggerIdentityColumn.Select(p => GetColumnName(map, p, false))
+						.First();
 			
 			query
 				.Insert(into: table)
@@ -293,7 +294,7 @@ namespace Dapper.Storage.Dapper
 			}
 
 			var dialect = this.GetDialect(map.EntityType);
-			var query = new QueryBuilder(dialect);
+			var query = new SqlBuilder(dialect);
 
 			var table = this.GetTableName(map);
 			var values = columns.Select(c => $"{this.GetColumnName(map, c, false)} = {dialect.ParameterPrefix}{c.Name}");
@@ -321,7 +322,7 @@ namespace Dapper.Storage.Dapper
 				throw new ArgumentNullException(nameof(parameters));
 			}
 
-			var query = new QueryBuilder();
+			var query = new SqlBuilder();
 			var table = this.GetTableName(map);
 
 			query

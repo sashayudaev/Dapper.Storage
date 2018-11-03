@@ -7,7 +7,10 @@ using Dapper.Storage.Core;
 namespace Dapper.Storage
 {
 	using System;
+	using System.Linq.Expressions;
 	using DapperExtensions;
+	using global::Dapper.Storage.Core.Linq;
+	using global::Dapper.Storage.Linq;
 	using Debug = System.Diagnostics.Debug;
 
 	public class Storage : IStorage, IQuery, IDisposable
@@ -22,9 +25,12 @@ namespace Dapper.Storage
 		}
 
 		#region IStorage
-		public IQueryable<TEntity> Select<TEntity>()
-			where TEntity : class => 
-			Connection.GetList<TEntity>().AsQueryable();
+		public IQueryBuilder<TEntity, TResult> Select<TEntity, TResult>(
+			Expression<Func<TEntity, TResult>> predicate) 
+			where TEntity : class
+		{
+			return new QueryBuilder<TEntity, TResult>(Connection, predicate);
+		}
 
 		public async Task InsertAsync<TEntity>(TEntity entity)
 			where TEntity : class => await

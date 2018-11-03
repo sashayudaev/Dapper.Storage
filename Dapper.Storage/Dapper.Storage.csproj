@@ -37,9 +37,6 @@
     <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="Dapper.SimpleCRUD, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.SimpleCRUD.2.0.1\lib\net45\Dapper.SimpleCRUD.dll</HintPath>
-    </Reference>
     <Reference Include="DapperExtensions, Version=1.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DapperExtensions.1.6.3\lib\net45\DapperExtensions.dll</HintPath>
     </Reference>
@@ -82,6 +79,12 @@
     <Compile Include="Dapper\SqlGenerator.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="EntityClassMapper.cs" />
+    <Compile Include="Linq\BinaryToken.cs" />
+    <Compile Include="Linq\ConstantToken.cs" />
+    <Compile Include="Linq\IToken.cs" />
+    <Compile Include="Linq\PropertyToken.cs" />
+    <Compile Include="Linq\QueryBuilder.cs" />
+    <Compile Include="Linq\Token.cs" />
     <Compile Include="Procedures\GetUserProcedure.cs" />
     <Compile Include="Procedures\ProcedureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
