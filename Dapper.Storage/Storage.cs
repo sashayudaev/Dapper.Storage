@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper.Storage.Core;
@@ -26,11 +25,8 @@ namespace Dapper.Storage
 
 		#region IStorage
 		public IQueryBuilder<TEntity, TResult> Select<TEntity, TResult>(
-			Expression<Func<TEntity, TResult>> predicate) 
-			where TEntity : class
-		{
-			return new QueryBuilder<TEntity, TResult>(Connection, predicate);
-		}
+			Expression<Func<TEntity, TResult>> predicate)
+			where TEntity : class => this.Query(predicate);
 
 		public async Task InsertAsync<TEntity>(TEntity entity)
 			where TEntity : class => await
@@ -86,5 +82,9 @@ namespace Dapper.Storage
 			Connection?.Dispose();
 		}
 		#endregion
+
+		private IQueryBuilder<TEntity, TResult> Query<TEntity, TResult>(
+			Expression<Func<TEntity, TResult>> predicate) where TEntity : class =>
+			new QueryBuilder<TEntity, TResult>(Connection, predicate);
 	}
 }

@@ -76,6 +76,7 @@
     <Compile Include="Context\PostgresContext.cs" />
     <Compile Include="Context\SqlServerContext.cs" />
     <Compile Include="Context\SybaseContext.cs" />
+    <Compile Include="Dapper\SqlBuilder.cs" />
     <Compile Include="Dapper\SqlGenerator.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="EntityClassMapper.cs" />

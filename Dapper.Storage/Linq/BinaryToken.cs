@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using DapperExtensions;
 
 namespace Dapper.Storage.Linq
 {
