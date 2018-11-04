@@ -44,9 +44,6 @@ namespace Dapper.Storage.Linq
 			return this.CreatePredicate(token, expression.NodeType);
 		}
 
-		public IPredicate Build() =>
-			Predicate;
-
 		private IPredicate GroupPredicates(IPredicate left, IPredicate right, ExpressionType nodeType)
 		{
 			var groupOperator = nodeType == ExpressionType.AndAlso
