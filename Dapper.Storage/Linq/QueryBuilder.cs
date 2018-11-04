@@ -37,14 +37,17 @@ namespace Dapper.Storage.Linq
 				var left = WhereInternal(binary.Left);
 				var right = WhereInternal(binary.Right);
 
-				return GroupPredicates(left, right, expression.NodeType);
+				return CollectPredicates(left, right, expression.NodeType);
 			}
 
 			var token = Token.Create(expression);
-			return this.CreatePredicate(token, expression.NodeType);
+			return CreatePredicate(token, expression.NodeType);
 		}
 
-		private IPredicate GroupPredicates(IPredicate left, IPredicate right, ExpressionType nodeType)
+		public IEnumerable<TEntity> AsEnumerable() =>
+			Connection.GetList<TEntity>(Predicate);
+
+		private static IPredicate CollectPredicates(IPredicate left, IPredicate right, ExpressionType nodeType)
 		{
 			var groupOperator = nodeType == ExpressionType.AndAlso
 					? GroupOperator.And
@@ -56,19 +59,19 @@ namespace Dapper.Storage.Linq
 				Predicates = new[] { left, right }
 			};
 		}
-		private IPredicate CreatePredicate(IToken token, ExpressionType nodeType) =>
+		private static IPredicate CreatePredicate(IToken token, ExpressionType nodeType) =>
 			new FieldPredicate<TEntity>
 			{
 				Value = token.Value,
 				PropertyName = token.Name,
-				Operator = this.GetOperatorType(nodeType)
+				Operator = GetOperatorType(nodeType)
 			};
 
 		private static bool IsBinaryNodeType(ExpressionType type) =>
 			type == ExpressionType.AndAlso ||
 			type == ExpressionType.OrElse;
 
-		private Operator GetOperatorType(ExpressionType nodeType)
+		private static Operator GetOperatorType(ExpressionType nodeType)
 		{
 			switch (nodeType)
 			{
@@ -86,8 +89,5 @@ namespace Dapper.Storage.Linq
 					throw new NotImplementedException();
 			}
 		}
-
-		public IEnumerable<TEntity> AsEnumerable() =>
-			Connection.GetList<TEntity>(this.Build());
 	}
 }
