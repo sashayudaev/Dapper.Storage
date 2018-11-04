@@ -9,7 +9,7 @@ namespace Dapper.Storage.Core
 	public interface IStorage : IHaveConnection, IDisposable
 	{
 		IQueryBuilder<TEntity, TResult> Select<TEntity, TResult>(
-			Expression<Func<TEntity, TResult>> predicate)
+			Expression<Func<TEntity, TResult>> predicate = null)
 			where TEntity : class;
 		Task InsertAsync<TEntity>(TEntity entity)
 			where TEntity : class;

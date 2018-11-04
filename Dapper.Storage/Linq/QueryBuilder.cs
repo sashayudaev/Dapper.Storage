@@ -10,14 +10,11 @@ using DapperExtensions;
 
 namespace Dapper.Storage.Linq
 {
-
 	public class QueryBuilder<TEntity, TResult> : IQueryBuilder<TEntity, TResult>
 		where TEntity : class
 	{
+		public IPredicate Predicate { get; private set; }
 		public IDbConnection Connection { get; }
-
-		public IList<IPredicate> Predicates { get; } =
-			new List<IPredicate>();
 
 		public QueryBuilder(
 			IDbConnection connection,
@@ -28,18 +25,51 @@ namespace Dapper.Storage.Linq
 
 		public IQueryBuilder<TEntity, TResult> Where(Expression<Func<TEntity, bool>> expression)
 		{
-			var token = Token.Create(expression.Body);
-
-			var predicate = new FieldPredicate<TEntity>
-			{
-				PropertyName = token.Name,
-				Value = token.Value,
-				Operator = this.GetOperatorType(expression.Body.NodeType)
-			};
-
-			this.AddPredicate(predicate);
+			Predicate = this.WhereInternal(expression.Body);
 			return this;
 		}
+
+		public IPredicate WhereInternal(Expression expression)
+		{
+			if(IsBinaryNodeType(expression.NodeType) &&
+			   expression is BinaryExpression binary)
+			{
+				var left = WhereInternal(binary.Left);
+				var right = WhereInternal(binary.Right);
+
+				return GroupPredicates(left, right, expression.NodeType);
+			}
+
+			var token = Token.Create(expression);
+			return this.CreatePredicate(token, expression.NodeType);
+		}
+
+		public IPredicate Build() =>
+			Predicate;
+
+		private IPredicate GroupPredicates(IPredicate left, IPredicate right, ExpressionType nodeType)
+		{
+			var groupOperator = nodeType == ExpressionType.AndAlso
+					? GroupOperator.And
+					: GroupOperator.Or;
+
+			return new PredicateGroup
+			{
+				Operator = groupOperator,
+				Predicates = new[] { left, right }
+			};
+		}
+		private IPredicate CreatePredicate(IToken token, ExpressionType nodeType) =>
+			new FieldPredicate<TEntity>
+			{
+				Value = token.Value,
+				PropertyName = token.Name,
+				Operator = this.GetOperatorType(nodeType)
+			};
+
+		private static bool IsBinaryNodeType(ExpressionType type) =>
+			type == ExpressionType.AndAlso ||
+			type == ExpressionType.OrElse;
 
 		private Operator GetOperatorType(ExpressionType nodeType)
 		{
@@ -60,18 +90,7 @@ namespace Dapper.Storage.Linq
 			}
 		}
 
-		private void AddPredicate(FieldPredicate<TEntity> predicate) =>
-			Predicates.Add(predicate);
-
-		public IEnumerable<TEntity> AsEnumerable()
-		{
-			var group = new PredicateGroup
-			{
-				Predicates = Predicates,
-				Operator = GroupOperator.And
-			};
-
-			return Connection.GetList<TEntity>(group);
-		}
+		public IEnumerable<TEntity> AsEnumerable() =>
+			Connection.GetList<TEntity>(this.Build());
 	}
 }

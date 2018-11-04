@@ -25,7 +25,7 @@ namespace Dapper.Storage
 
 		#region IStorage
 		public IQueryBuilder<TEntity, TResult> Select<TEntity, TResult>(
-			Expression<Func<TEntity, TResult>> predicate)
+			Expression<Func<TEntity, TResult>> predicate = null)
 			where TEntity : class => this.Query(predicate);
 
 		public async Task InsertAsync<TEntity>(TEntity entity)

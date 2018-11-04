@@ -40,25 +40,10 @@ namespace Dapper.Storage.Console
 
 			var benchmark = new Benchmark();
 
-			benchmark.Run(() =>
-			{
-				storage
-					.Select<UserEntity, int>(u => u.Id)
-					.Where(u => u.Id == 9)
-					.AsEnumerable();
-			});
-
-			using (var connection = storage.OpenConnection())
-			{
-
-				benchmark.Run(() =>
-				{
-					connection
-						.GetList<UserEntity>()
-						.Where(u => u.Id == 9)
-						.ToList();
-				});
-			}
+			var user = storage
+				.Select<UserEntity, int>()
+				.Where(u => u.Id > 3 && u.Password.Equals("test") && u.Id < 19)
+				.AsEnumerable();
 
 			System.Console.ReadKey();
 		}
