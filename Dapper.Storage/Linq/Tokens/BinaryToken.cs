@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Dapper.Storage.Linq
+namespace Dapper.Storage.Linq.Tokens
 {
 	public class BinaryToken : Token
 	{

@@ -80,12 +80,13 @@
     <Compile Include="Dapper\SqlGenerator.cs" />
     <Compile Include="Entities\UserEntity.cs" />
     <Compile Include="EntityClassMapper.cs" />
-    <Compile Include="Linq\BinaryToken.cs" />
-    <Compile Include="Linq\ConstantToken.cs" />
+    <Compile Include="Linq\Tokens\BinaryToken.cs" />
+    <Compile Include="Linq\Tokens\ConstantToken.cs" />
     <Compile Include="Linq\IToken.cs" />
-    <Compile Include="Linq\PropertyToken.cs" />
+    <Compile Include="Linq\Tokens\PropertyToken.cs" />
     <Compile Include="Linq\QueryBuilder.cs" />
-    <Compile Include="Linq\Token.cs" />
+    <Compile Include="Linq\Tokens\Token.cs" />
+    <Compile Include="Linq\Tokens\UnaryToken.cs" />
     <Compile Include="Procedures\GetUserProcedure.cs" />
     <Compile Include="Procedures\ProcedureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

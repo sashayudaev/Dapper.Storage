@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Dapper.Storage.Linq
+namespace Dapper.Storage.Linq.Tokens
 {
 	public abstract class Token : IToken
 	{
@@ -25,9 +25,26 @@ namespace Dapper.Storage.Linq
 					return new PropertyToken(property);
 				case ConstantExpression constant:
 					return new ConstantToken(constant);
+				case MethodCallExpression method:
+					return CreateMethodToken(method);
 				default:
 					throw new ArgumentException(expression.GetType().ToString());
 			}
+		}
+
+		private static IToken CreateMethodToken(MethodCallExpression expression)
+		{
+			if(expression.Method.Name.Equals("Equals"))
+			{
+
+			}
+
+			var binary = Expression.MakeBinary(
+				ExpressionType.Equal,
+				expression.Object,
+				expression.Arguments[0]);
+
+			return new BinaryToken(binary);
 		}
 	}
 }

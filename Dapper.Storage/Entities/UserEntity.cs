@@ -18,5 +18,8 @@
 
 		[@Column("password")]
 		public string Password { get; set; }
+
+		[@Column("blocked")]
+		public bool IsBlocked{ get; set; }
 	}
 }

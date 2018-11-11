@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Dapper.Storage.Core.Linq;
+using Dapper.Storage.Linq.Tokens;
 using DapperExtensions;
 
 namespace Dapper.Storage.Linq
@@ -47,11 +45,23 @@ namespace Dapper.Storage.Linq
 		public IEnumerable<TEntity> AsEnumerable() =>
 			Connection.GetList<TEntity>(Predicate);
 
-		private static IPredicate CollectPredicates(IPredicate left, IPredicate right, ExpressionType nodeType)
+		private static IPredicate CollectPredicates(
+			IPredicate left, 
+			IPredicate right, 
+			ExpressionType nodeType)
 		{
-			var groupOperator = nodeType == ExpressionType.AndAlso
-					? GroupOperator.And
-					: GroupOperator.Or;
+			GroupOperator groupOperator;
+
+			switch (nodeType)
+			{
+				case ExpressionType.OrElse:
+					groupOperator = GroupOperator.Or;
+					break;
+				case ExpressionType.AndAlso:
+				default:
+					groupOperator = GroupOperator.And;
+					break;
+			}
 
 			return new PredicateGroup
 			{
@@ -70,7 +80,6 @@ namespace Dapper.Storage.Linq
 		private static bool IsBinaryNodeType(ExpressionType type) =>
 			type == ExpressionType.AndAlso ||
 			type == ExpressionType.OrElse;
-
 		private static Operator GetOperatorType(ExpressionType nodeType)
 		{
 			switch (nodeType)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Dapper.Storage.Linq
+namespace Dapper.Storage.Linq.Tokens
 {
 	using LExpression = Expression;
 	public class PropertyToken : Token
